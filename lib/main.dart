@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.system,
           initialRoute: AppRoutes.HOME,
-          getPages: AppRoutes.routes,
+          getPages: AppPages.pages,
           builder: (context, child) {
             ScreenUtil.init(context);
             return MediaQuery(

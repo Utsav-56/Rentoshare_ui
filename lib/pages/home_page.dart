@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rentoshare/app_utils/notifier.dart';
-import '../routes/app_pages.dart';
-import '../routes/app_routes.dart';
+import 'package:rentoshare/components/bottom_navigation_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -11,13 +10,18 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Home")),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => Notifier.showToast(
-            "",
-            title: "Sorry The Login page is not ready yet",
-            type: ToastType.warning,
-          ),
-          child: const Text("Go to Login"),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => Notifier.showToast(
+                "",
+                title: "Sorry The Login page is not ready yet",
+                type: ToastType.warning,
+              ),
+              child: const Text("Go to Login"),
+            ),
+            AppBottomBar(),
+          ],
         ),
       ),
     );
