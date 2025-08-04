@@ -7,6 +7,7 @@ enum ToastType { success, error, warning, info }
 class Notifier {
   static void showToast(
     String message, {
+    String? title,
     ToastType type = ToastType.info,
     Duration duration = const Duration(seconds: 3),
     bool dismissible = true,
@@ -18,14 +19,21 @@ class Notifier {
       ToastType.info: ToastificationType.info,
     }[type];
 
+    final icon = {
+      ToastType.success: Icons.check_circle_outline,
+      ToastType.error: Icons.error_outline,
+      ToastType.warning: Icons.warning_amber_outlined,
+      ToastType.info: Icons.info_outline,
+    }[type];
+
     toastification.show(
       type: toastificationType,
       style: ToastificationStyle.fillColored,
-      title: Text("Component updates available."),
-      description: Text("Component updates available."),
+      title: title != null ? Text(title) : null,
+      description: Text(message),
       alignment: Alignment.bottomLeft,
       autoCloseDuration: const Duration(seconds: 4),
-      icon: Icon(Icons.info, color: Colors.white),
+      icon: Icon(icon),
       borderRadius: BorderRadius.circular(100.0),
       boxShadow: highModeShadow,
       applyBlurEffect: true,
