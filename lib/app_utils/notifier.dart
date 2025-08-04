@@ -26,11 +26,15 @@ class Notifier {
       ToastType.info: Icons.info_outline,
     }[type];
 
+    final description = message != "" || message.isNotEmpty
+        ? Text(message)
+        : null;
+
     toastification.show(
       type: toastificationType,
       style: ToastificationStyle.fillColored,
       title: title != null ? Text(title) : null,
-      description: Text(message),
+      description: description,
       alignment: Alignment.bottomLeft,
       autoCloseDuration: const Duration(seconds: 4),
       icon: Icon(icon),

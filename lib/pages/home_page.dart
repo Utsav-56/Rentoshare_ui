@@ -13,7 +13,8 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () => Notifier.showToast(
-            "Sorry THe Login page is not ready yet",
+            "",
+            title: "Sorry The Login page is not ready yet",
             type: ToastType.warning,
           ),
           child: const Text("Go to Login"),
