@@ -7,6 +7,12 @@ class AppRoutes {
   static const String LOGIN = '/login';
   static const String SETTINGS = '/settings';
   // Add more as needed
+
+  static final List<GetPage> routes = [
+    GetPage(name: HOME, page: () => const HomePage()),
+    GetPage(name: LOGIN, page: () => const LoginPage()),
+    // Add more GetPages here
+  ];
 }
 
 class AppPages {
