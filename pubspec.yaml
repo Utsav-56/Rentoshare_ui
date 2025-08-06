@@ -40,6 +40,9 @@ dependencies:
     flutter_svg: ^2.2.0
     toastification: 3.0.3
     flutter_screenutil: ^5.9.3
+    flutter_secure_storage: ^9.2.4
+    font_awesome_flutter: ^10.9.0
+    image_picker: ^1.1.2
 
 dev_dependencies:
     flutter_test:
@@ -63,9 +66,9 @@ flutter:
     uses-material-design: true
 
     # To add assets to your application, add an assets section, like this:
-    # assets:
-    #   - images/a_dot_burr.jpeg
-    #   - images/a_dot_ham.jpeg
+    assets:
+        - assets/images/ # adds all images in the images directory
+
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/to/resolution-aware-images

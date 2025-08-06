@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart' show Widget;
 import 'package:get/get.dart';
 import 'package:rentoshare/MyApp.dart';
 import 'package:rentoshare/pages/404_page.dart';
+import 'package:rentoshare/pages/auth/signup_page.dart';
 import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 
@@ -10,6 +11,7 @@ class AppRoutes {
   static const String LOGIN = '/login';
   static const String SETTINGS = '/settings';
   static const String FALLBACK = '/fallback';
+  static const String SIGNUP = '/signup';
   // Add more as needed
 }
 
@@ -19,6 +21,7 @@ class AppPages {
     AppRoutes.HOME: const HomePage(),
     AppRoutes.LOGIN: const LoginPage(),
     AppRoutes.FALLBACK: const NotFoundPage(),
+    AppRoutes.SIGNUP: const SignupPage(),
     // Add more as needed
   };
 
@@ -36,7 +39,21 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.LOGIN,
-      page: () => RentoShareApp(title: "Login", child: get(AppRoutes.LOGIN)),
+      page: () => RentoShareApp(
+        title: "Login",
+        showDrawer: false,
+        showBottomNav: false,
+        child: get(AppRoutes.LOGIN),
+      ),
+    ),
+    GetPage(
+      name: AppRoutes.SIGNUP,
+      page: () => RentoShareApp(
+        title: "Signup",
+        showBottomNav: false,
+        showDrawer: false,
+        child: get(AppRoutes.SIGNUP),
+      ),
     ),
 
     // Add more GetPages here

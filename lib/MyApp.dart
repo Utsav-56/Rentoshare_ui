@@ -6,21 +6,25 @@ import 'package:rentoshare/components/bottom_navigation_bar.dart';
 // Will use the getx obx for the state management
 class RentoShareApp extends StatelessWidget {
   final Widget child;
-  final String title;
+  final String? title;
+  final bool? showDrawer;
+  final bool? showBottomNav;
 
   const RentoShareApp({
     super.key,
     required this.child,
-    this.title = "RentoShare",
+    this.title,
+    this.showDrawer = true,
+    this.showBottomNav = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 600;
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      drawer: isWide ? null : const AppDrawer(),
-      body: isWide
+      appBar: title != null ? AppBar(title: Text(title!)) : null,
+      drawer: (showDrawer ?? true) ? (isWide ? null : const AppDrawer()) : null,
+      body: isWide && (showDrawer ?? true)
           ? Row(
               children: [
                 const SizedBox(
@@ -31,7 +35,7 @@ class RentoShareApp extends StatelessWidget {
               ],
             )
           : child,
-      bottomNavigationBar: AppBottomBar(),
+      bottomNavigationBar: (showBottomNav ?? true) ? AppBottomBar() : null,
     );
   }
 }
