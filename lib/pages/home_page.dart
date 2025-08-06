@@ -11,8 +11,6 @@ class HomePage extends StatelessWidget {
     final isWide = MediaQuery.of(context).size.width > 600;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Responsive Drawer")),
-      drawer: isWide ? null : const AppDrawer(),
       body: Row(
         children: [
           if (isWide)
