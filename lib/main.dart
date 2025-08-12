@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.theme,
           darkTheme: AppTheme.theme,
           themeMode: ThemeMode.system,
-          initialRoute: AppRoutes.LOGIN,
+          initialRoute: AppRoutes.HOME,
           getPages: AppPages.pages,
           builder: (context, child) {
             ScreenUtil.init(context);

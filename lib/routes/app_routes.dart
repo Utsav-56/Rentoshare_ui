@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rentoshare/MyApp.dart';
 import 'package:rentoshare/pages/404_page.dart';
 import 'package:rentoshare/pages/auth/signup_page.dart';
+import 'package:rentoshare/pages/dashboard/dashboard_page.dart';
 import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String SETTINGS = '/settings';
   static const String FALLBACK = '/fallback';
   static const String SIGNUP = '/signup';
+  static const String DASHBOARD = '/dashboard';
   // Add more as needed
 }
 
@@ -22,6 +24,7 @@ class AppPages {
     AppRoutes.LOGIN: const LoginPage(),
     AppRoutes.FALLBACK: const NotFoundPage(),
     AppRoutes.SIGNUP: const SignupPage(),
+    AppRoutes.DASHBOARD: const DashboardPage(),
     // Add more as needed
   };
 
@@ -53,6 +56,15 @@ class AppPages {
         showBottomNav: false,
         showDrawer: false,
         child: get(AppRoutes.SIGNUP),
+      ),
+    ),
+    GetPage(
+      name: AppRoutes.DASHBOARD,
+      page: () => RentoShareApp(
+        title: "Dashboard",
+        showDrawer: false,
+        showBottomNav: false,
+        child: get(AppRoutes.DASHBOARD),
       ),
     ),
 

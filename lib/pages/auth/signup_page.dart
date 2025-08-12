@@ -479,14 +479,10 @@ class _SignupPageState extends State<SignupPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Already have an account? "),
-        GestureDetector(
-          onTap: () {
-            AppRouter.to(AppRoutes.LOGIN);
-          },
-          child: HoveringText(
-            text: 'Login',
-            style: const TextStyle(color: Colors.blueAccent),
-          ),
+        HoveringText(
+          text: 'Login',
+          style: const TextStyle(color: Colors.blueAccent),
+          onTap: () => AppRouter.to(AppRoutes.LOGIN),
         ),
       ],
     );

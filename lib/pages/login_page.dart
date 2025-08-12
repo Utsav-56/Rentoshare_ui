@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'
     show FontAwesomeIcons;
+import 'package:rentoshare/pages/auth/signup_page.dart';
 import '../routes/app_router.dart';
 import '../routes/app_routes.dart';
 
@@ -207,17 +208,13 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Don't have an account yet? "),
-        GestureDetector(
-          onTap: () {
-            AppRouter.to(AppRoutes.SIGNUP);
-          },
-          child: Text(
-            'Sign Up',
-            style: TextStyle(
-              color: Colors.blueAccent,
-              fontWeight: FontWeight.bold,
-            ),
+        HoveringText(
+          text: 'Sign Up',
+          style: TextStyle(
+            color: Colors.blueAccent,
+            fontWeight: FontWeight.bold,
           ),
+          onTap: () => AppRouter.to(AppRoutes.SIGNUP),
         ),
       ],
     );
