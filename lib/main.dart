@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:rentoshare/styles/app_theme.dart';
 import 'package:toastification/toastification.dart';
 
 import 'routes/app_routes.dart';
-import 'styles/app_theme.dart';
+// import '../.bak/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await ScreenUtil.ensureScreenSize();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  var AppTheme = AppThemeData();
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +30,10 @@ class MyApp extends StatelessWidget {
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RentoShare',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.theme,
+          darkTheme: AppTheme.theme,
           themeMode: ThemeMode.system,
-          initialRoute: AppRoutes.HOME,
+          initialRoute: AppRoutes.LOGIN,
           getPages: AppPages.pages,
           builder: (context, child) {
             ScreenUtil.init(context);
