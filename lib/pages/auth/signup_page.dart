@@ -162,6 +162,10 @@ class _SignupPageState extends State<SignupPage> {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 32),
+                _buildSocialSignUp(),
+                const SizedBox(height: 32),
+
+                const SizedBox(height: 32),
                 _buildProfilePicture(),
                 const SizedBox(height: 24),
                 _buildRequiredFields(),
@@ -172,8 +176,6 @@ class _SignupPageState extends State<SignupPage> {
                 const SizedBox(height: 24),
                 _buildSignUpButton(),
                 const SizedBox(height: 16),
-                _buildSocialSignUp(),
-                const SizedBox(height: 32),
                 _buildLoginPrompt(),
               ],
             ),
@@ -271,14 +273,16 @@ class _SignupPageState extends State<SignupPage> {
         ),
         const SizedBox(height: 16),
         TextFormField(
-          controller: _usernameController,
+          controller: _phoneNumberController,
           decoration: const InputDecoration(
-            labelText: 'Username',
-            hintText: 'Choose a username',
-            prefixIcon: Icon(Icons.alternate_email),
+            labelText: 'Phone Number ',
+            hintText: 'Enter your phone number',
+            prefixIcon: Icon(Icons.phone),
           ),
-          validator: _validateUsername,
+          keyboardType: TextInputType.phone,
+          validator: _validatePhone,
         ),
+
         const SizedBox(height: 16),
         TextFormField(
           controller: _emailController,
@@ -350,18 +354,8 @@ class _SignupPageState extends State<SignupPage> {
             color: Colors.grey,
           ),
         ),
-        const SizedBox(height: 16),
-        TextFormField(
-          controller: _phoneNumberController,
-          decoration: const InputDecoration(
-            labelText: 'Phone Number (Optional)',
-            hintText: 'Enter your phone number',
-            prefixIcon: Icon(Icons.phone),
-          ),
-          keyboardType: TextInputType.phone,
-          validator: _validatePhone,
-        ),
-        const SizedBox(height: 16),
+        // const SizedBox(height: 16),
+        // const SizedBox(height: 16),
         TextFormField(
           controller: _bioController,
           decoration: const InputDecoration(
@@ -400,14 +394,19 @@ class _SignupPageState extends State<SignupPage> {
               text: TextSpan(
                 children: [
                   const TextSpan(text: 'I agree to the '),
-                  TextSpan(
-                    text: 'Terms and Conditions',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  WidgetSpan(
+                    child: HoveringText(
+                      text: 'Terms of Service',
+                      onTap: () {},
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const TextSpan(text: ' and '),
-                  TextSpan(
-                    text: 'Privacy Policy',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  WidgetSpan(
+                    child: HoveringText(
+                      text: 'Privacy Policy',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
@@ -484,9 +483,56 @@ class _SignupPageState extends State<SignupPage> {
           onTap: () {
             AppRouter.to(AppRoutes.LOGIN);
           },
-          child: Text('Sign In'),
+          child: HoveringText(
+            text: 'Login',
+            style: const TextStyle(color: Colors.blueAccent),
+          ),
         ),
       ],
+    );
+  }
+}
+
+class HoveringText extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  final VoidCallback? onTap;
+  final underlineColor = Colors.blueAccent;
+  final underlineOnHover = true;
+
+  const HoveringText({super.key, required this.text, this.style, this.onTap});
+
+  @override
+  State<HoveringText> createState() => _HoveringTextState();
+}
+
+class _HoveringTextState extends State<HoveringText> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (event) => setState(() {
+        _isHovering = true;
+      }),
+      onExit: (event) => setState(() {
+        _isHovering = false;
+      }),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          if (widget.onTap != null) widget.onTap!();
+        },
+        child: Text(
+          widget.text,
+          style: widget.style?.copyWith(
+            decoration: _isHovering && widget.underlineOnHover
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            color: _isHovering ? widget.underlineColor : null,
+          ),
+        ),
+      ),
     );
   }
 }
