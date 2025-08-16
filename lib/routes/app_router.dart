@@ -35,6 +35,14 @@ class AppRouter {
     return Get.currentRoute == routeName;
   }
 
+  /// Checks if any route in the list is currently active
+  static bool isAnyRouteActive(List<String> routes) {
+    return routes.any((route) => isActiveRoute(route));
+  }
+
+  /// Gets the current active route
+  static String get currentRoute => Get.currentRoute;
+
   static void off(String routeName, {dynamic arguments}) {
     Get.offNamed(routeName, arguments: arguments);
   }

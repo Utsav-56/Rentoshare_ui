@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/dashboard_overview.dart';
-import 'package:rentoshare/pages/dashboard/widgets/listings/my_listings_view.dart';
-import 'package:rentoshare/pages/dashboard/widgets/rentals/my_rentals_view.dart';
-import 'package:rentoshare/pages/dashboard/widgets/messages/messages_view.dart';
-import 'package:rentoshare/pages/dashboard/widgets/reviews/reviews_view.dart';
-import 'package:rentoshare/pages/dashboard/widgets/wallet/wallet_view.dart';
-import 'package:rentoshare/pages/dashboard/widgets/settings/settings_view.dart';
+import 'package:rentoshare/dashboard/widgets/overview/dashboard_overview.dart';
+import 'package:rentoshare/dashboard/widgets/listings/my_listings_view.dart';
+import 'package:rentoshare/dashboard/widgets/rentals/my_rentals_view.dart';
+import 'package:rentoshare/dashboard/widgets/messages/messages_view.dart';
+import 'package:rentoshare/dashboard/widgets/reviews/reviews_view.dart';
+import 'package:rentoshare/dashboard/widgets/wallet/wallet_view.dart';
+import 'package:rentoshare/dashboard/widgets/settings/settings_view.dart';
 
 class DashboardContent extends StatelessWidget {
   final int selectedIndex;

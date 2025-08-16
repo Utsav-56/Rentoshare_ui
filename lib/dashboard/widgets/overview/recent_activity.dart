@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart';
+import 'package:rentoshare/dashboard/controllers/dashboard_controller.dart';
 
 class RecentActivity extends StatelessWidget {
   const RecentActivity({super.key});

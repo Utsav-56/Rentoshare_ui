@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart';
+import 'package:rentoshare/controllers/app_navigation_controller.dart';
+import 'package:rentoshare/dashboard/controllers/dashboard_controller.dart';
 
 class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   const DashboardAppBar({super.key});
@@ -44,7 +44,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final dashboardController = Get.find<DashboardController>();
-    final navController = Get.find<DashboardNavController>();
+    final navController = Get.find<NavigationController>();
 
     return LayoutBuilder(
       builder: (context, constraints) {

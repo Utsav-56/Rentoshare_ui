@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/welcome_section.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/stats_cards.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/recent_activity.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/messages_preview.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/earnings_chart.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/recommended_section.dart';
-import 'package:rentoshare/pages/dashboard/widgets/overview/support_tips.dart';
+import 'package:rentoshare/dashboard/controllers/dashboard_controller.dart';
+import 'package:rentoshare/dashboard/widgets/overview/welcome_section.dart';
+import 'package:rentoshare/dashboard/widgets/overview/stats_cards.dart';
+import 'package:rentoshare/dashboard/widgets/overview/recent_activity.dart';
+import 'package:rentoshare/dashboard/widgets/overview/messages_preview.dart';
+import 'package:rentoshare/dashboard/widgets/overview/earnings_chart.dart';
+import 'package:rentoshare/dashboard/widgets/overview/recommended_section.dart';
+import 'package:rentoshare/dashboard/widgets/overview/support_tips.dart';
 
 class DashboardOverview extends StatelessWidget {
   const DashboardOverview({super.key});

@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart' show Widget;
 import 'package:get/get.dart';
 import 'package:rentoshare/MyApp.dart';
-import 'package:rentoshare/dashboard/new_dashboard.dart';
+import 'package:rentoshare/dashboard/widgets/rentals/my_rentals_view.dart';
+
 import 'package:rentoshare/pages/404_page.dart';
 import 'package:rentoshare/pages/auth/signup_page.dart';
-import 'package:rentoshare/pages/dashboard/dashboard_page.dart';
+import 'package:rentoshare/dashboard/dashboard_page.dart';
 import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 
@@ -15,7 +16,15 @@ class AppRoutes {
   static const String FALLBACK = '/fallback';
   static const String SIGNUP = '/signup';
   static const String DASHBOARD = '/dashboard';
-  static const String NEWDASHBOARD = '/newdashboard';
+
+  // Dashboard routes
+  static const String MARKETPLACE = '/marketplace/browse';
+  static const String MY_LISTINGS = '/listings/manage';
+  static const String MY_RENTALS = '/rentals/active';
+  static const String MESSAGES = '/chat';
+  static const String PROFILE = '/profile/edit';
+
+  static const String HELP = '/help';
   // Add more as needed
 }
 
@@ -27,12 +36,44 @@ class AppPages {
     AppRoutes.FALLBACK: const NotFoundPage(),
     AppRoutes.SIGNUP: const SignupPage(),
     AppRoutes.DASHBOARD: const DashboardPage(),
-    AppRoutes.NEWDASHBOARD: const NewDashboard(),
-    // Add more as needed
+
+    // Dashboard routes
+    AppRoutes.MY_RENTALS: MyRentalsView(),
+    AppRoutes.MARKETPLACE: const NotFoundPage(),
+    AppRoutes.MY_LISTINGS: const NotFoundPage(),
+    AppRoutes.MESSAGES: const NotFoundPage(),
+    AppRoutes.PROFILE: const NotFoundPage(),
+    AppRoutes.HELP: const NotFoundPage(),
   };
 
   static Widget get(String routeName) =>
       routes[routeName] ?? const NotFoundPage();
+
+  static final titles = {
+    AppRoutes.HOME: "Home",
+    AppRoutes.LOGIN: "Login",
+    AppRoutes.FALLBACK: "404",
+    AppRoutes.SIGNUP: "Signup",
+    AppRoutes.DASHBOARD: "Dashboard",
+    AppRoutes.MARKETPLACE: "Marketplace",
+    AppRoutes.MY_LISTINGS: "My Listings",
+    AppRoutes.MY_RENTALS: "My Rentals",
+    AppRoutes.MESSAGES: "Messages",
+    AppRoutes.PROFILE: "Profile",
+    AppRoutes.HELP: "Help",
+  };
+
+  static String getTitle(String routeName) => titles[routeName] ?? "404";
+
+  static List<GetPage> get getPages => routes.entries
+      .map(
+        (entry) => GetPage(
+          name: entry.key,
+          page: () =>
+              RentoShareApp(title: getTitle(entry.key), child: get(entry.key)),
+        ),
+      )
+      .toList();
 
   static final List<GetPage> pages = [
     GetPage(
@@ -68,16 +109,6 @@ class AppPages {
         showDrawer: false,
         showBottomNav: false,
         child: get(AppRoutes.DASHBOARD),
-      ),
-    ),
-
-    GetPage(
-      name: AppRoutes.NEWDASHBOARD,
-      page: () => RentoShareApp(
-        title: "Dashboard",
-        showDrawer: false,
-        showBottomNav: false,
-        child: get(AppRoutes.NEWDASHBOARD),
       ),
     ),
 

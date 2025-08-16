@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart';
+import 'package:rentoshare/controllers/app_navigation_controller.dart';
+import 'package:rentoshare/dashboard/controllers/dashboard_controller.dart';
 import 'package:rentoshare/styles/app_theme.dart';
 import 'package:toastification/toastification.dart';
 
@@ -38,6 +39,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(NavigationController());
+
     return ScreenUtilInit(
       designSize: Size(1920, 1200), // Default size
       minTextAdapt: true,
@@ -50,7 +53,7 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.theme,
           themeMode: ThemeMode.system,
           initialRoute: AppRoutes.DASHBOARD,
-          getPages: AppPages.pages,
+          getPages: AppPages.getPages,
           builder: (context, child) {
             ScreenUtil.init(context);
             return MediaQuery(
