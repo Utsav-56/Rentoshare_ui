@@ -9,7 +9,7 @@ export './app_routes.dart';
 class AppRouter {
   static Future<T?> to<T>(String routeName, {dynamic arguments}) async {
     // Check if the route is already the current route
-    if (Get.currentRoute == routeName) {
+    if (isActiveRoute(routeName)) {
       return null;
     }
 
@@ -24,6 +24,15 @@ class AppRouter {
     }
 
     return Get.toNamed<T>(routeName, arguments: arguments);
+  }
+
+  /// Checks if the given [routeName] is currently active in the app.
+  ///
+  /// Returns `true` if the [routeName] matches the current route,
+  /// `false` otherwise.
+  ///
+  static bool isActiveRoute(String routeName) {
+    return Get.currentRoute == routeName;
   }
 
   static void off(String routeName, {dynamic arguments}) {
