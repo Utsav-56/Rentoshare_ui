@@ -22,7 +22,7 @@ class DashboardNavController extends GetxController {
           icon: Icon(
             isIconOnlyMode.value ? Icons.chevron_right : Icons.chevron_left,
             color: Theme.of(context).colorScheme.onSurface,
-            size: 24.w,
+            size: 24,
           ),
           onPressed: toggleIconsOnlyMode,
           tooltip: isIconOnlyMode.value ? 'Expand sidebar' : 'Collapse sidebar',

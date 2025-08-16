@@ -6,114 +6,214 @@ import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart
 class EarningsChart extends StatelessWidget {
   const EarningsChart({super.key});
 
+  // Container styling constants
+  static final double _containerPadding = 20;
+  static final double _containerBorderRadius = 16;
+  static final double _containerBorderWidth = 1.0;
+  static const double _containerBorderOpacity = 0.1;
+  static const double _containerShadowOpacity = 0.05;
+  static final double _containerShadowBlur = 10;
+  static final Offset _containerShadowOffset = Offset(0, 2);
+
+  // Header layout constants
+  static final double _headerTitleBottomSpacing = 4;
+  static final double _headerBottomSpacing = 24;
+  static final double _periodButtonSpacing = 8;
+
+  // Header text styling constants
+  static final double _titleFontSize = 16;
+  static const FontWeight _titleFontWeight = FontWeight.w700;
+  static final double _totalEarningsFontSize = 24;
+  static const FontWeight _totalEarningsFontWeight = FontWeight.w700;
+  static const int _totalEarningsDecimalPlaces = 0;
+
+  // Chart constants
+  static final double _chartHeight = 200;
+  static final double _chartBottomSpacing = 20;
+
+  // Button constants
+  static final double _buttonIconSize = 20;
+  static final double _buttonFontSize = 14;
+  static const FontWeight _buttonFontWeight = FontWeight.w600;
+  static final EdgeInsets _buttonPadding = EdgeInsets.symmetric(vertical: 12.h);
+  static final double _buttonBorderRadius = 12;
+
+  // Layout constants
+  static const CrossAxisAlignment _columnCrossAxisAlignment =
+      CrossAxisAlignment.start;
+  static const MainAxisAlignment _headerMainAxisAlignment =
+      MainAxisAlignment.spaceBetween;
+  static const double _fullWidth = double.infinity;
+
+  // Content constants
+  static const String _sectionTitle = 'Weekly Earnings';
+  static const String _currencySymbol = '\$';
+  static const String _quickPayoutButtonText = 'Quick Payout';
+  static const String _weekPeriodLabel = 'Week';
+  static const String _monthPeriodLabel = 'Month';
+
+  // Menu index constants
+  static const int _walletMenuIndex = 5;
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DashboardController>();
 
     return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 2.h),
-          ),
-        ],
-      ),
+      padding: EdgeInsets.all(_containerPadding),
+      decoration: _buildContainerDecoration(context),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: _columnCrossAxisAlignment,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Weekly Earnings',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Obx(() {
-                    final totalEarnings = controller.weeklyEarnings
-                        .map((e) => e.y)
-                        .reduce((a, b) => a + b);
-                    return Text(
-                      '\$${totalEarnings.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    );
-                  }),
-                ],
-              ),
-              Row(
-                children: [
-                  _ChartPeriodButton(
-                    label: 'Week',
-                    isSelected: true,
-                    onTap: () {},
-                  ),
-                  SizedBox(width: 8.w),
-                  _ChartPeriodButton(
-                    label: 'Month',
-                    isSelected: false,
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 24.h),
-
-          // Simple Bar Chart
-          SizedBox(
-            height: 200.h,
-            child: _SimpleBarChart(data: controller.weeklyEarnings),
-          ),
-
-          SizedBox(height: 20.h),
-
-          // Quick Payout Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                controller.selectMenuItem(5);
-              },
-              icon: Icon(Icons.account_balance_wallet_rounded, size: 20.w),
-              label: Text(
-                'Quick Payout',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                foregroundColor: Theme.of(
-                  context,
-                ).colorScheme.onPrimaryContainer,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-          ),
+          _buildHeader(context, controller),
+          SizedBox(height: _headerBottomSpacing),
+          _buildChart(controller),
+          SizedBox(height: _chartBottomSpacing),
+          _buildQuickPayoutButton(context, controller),
         ],
       ),
     );
+  }
+
+  BoxDecoration _buildContainerDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      borderRadius: BorderRadius.circular(_containerBorderRadius),
+      border: Border.all(
+        color: Theme.of(
+          context,
+        ).colorScheme.outline.withOpacity(_containerBorderOpacity),
+        width: _containerBorderWidth,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(
+            context,
+          ).colorScheme.shadow.withOpacity(_containerShadowOpacity),
+          blurRadius: _containerShadowBlur,
+          offset: _containerShadowOffset,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, DashboardController controller) {
+    return Row(
+      mainAxisAlignment: _headerMainAxisAlignment,
+      children: [
+        _buildTitleSection(context, controller),
+        _buildPeriodButtons(),
+      ],
+    );
+  }
+
+  Widget _buildTitleSection(
+    BuildContext context,
+    DashboardController controller,
+  ) {
+    return Column(
+      crossAxisAlignment: _columnCrossAxisAlignment,
+      children: [
+        _buildSectionTitle(context),
+        SizedBox(height: _headerTitleBottomSpacing),
+        _buildTotalEarnings(context, controller),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context) {
+    return Text(
+      _sectionTitle,
+      style: TextStyle(
+        fontSize: _titleFontSize,
+        fontWeight: _titleFontWeight,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
+  }
+
+  Widget _buildTotalEarnings(
+    BuildContext context,
+    DashboardController controller,
+  ) {
+    return Obx(() {
+      final totalEarnings = controller.weeklyEarnings
+          .map((e) => e.y)
+          .reduce((a, b) => a + b);
+      return Text(
+        '$_currencySymbol${totalEarnings.toStringAsFixed(_totalEarningsDecimalPlaces)}',
+        style: TextStyle(
+          fontSize: _totalEarningsFontSize,
+          fontWeight: _totalEarningsFontWeight,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      );
+    });
+  }
+
+  Widget _buildPeriodButtons() {
+    return Row(
+      children: [
+        _ChartPeriodButton(
+          label: _weekPeriodLabel,
+          isSelected: true,
+          onTap: _handleWeekPeriodSelected,
+        ),
+        SizedBox(width: _periodButtonSpacing),
+        _ChartPeriodButton(
+          label: _monthPeriodLabel,
+          isSelected: false,
+          onTap: _handleMonthPeriodSelected,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChart(DashboardController controller) {
+    return SizedBox(
+      height: _chartHeight,
+      child: _SimpleBarChart(data: controller.weeklyEarnings),
+    );
+  }
+
+  Widget _buildQuickPayoutButton(
+    BuildContext context,
+    DashboardController controller,
+  ) {
+    return SizedBox(
+      width: _fullWidth,
+      child: ElevatedButton.icon(
+        onPressed: () => controller.selectMenuItem(_walletMenuIndex),
+        icon: Icon(Icons.account_balance_wallet_rounded, size: _buttonIconSize),
+        label: Text(
+          _quickPayoutButtonText,
+          style: TextStyle(
+            fontSize: _buttonFontSize,
+            fontWeight: _buttonFontWeight,
+          ),
+        ),
+        style: _buildButtonStyle(context),
+      ),
+    );
+  }
+
+  ButtonStyle _buildButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+      padding: _buttonPadding,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(_buttonBorderRadius),
+      ),
+    );
+  }
+
+  void _handleWeekPeriodSelected() {
+    // Handle week period selection
+  }
+
+  void _handleMonthPeriodSelected() {
+    // Handle month period selection
   }
 }
 
@@ -128,38 +228,60 @@ class _ChartPeriodButton extends StatelessWidget {
     required this.onTap,
   });
 
+  // Button styling constants
+  static final double _buttonBorderRadius = 8.r;
+  static final EdgeInsets _buttonPadding = EdgeInsets.symmetric(
+    horizontal: 12.w,
+    vertical: 6.h,
+  );
+  static final double _buttonBorderWidth = 1.0;
+  static const double _borderOpacity = 0.3;
+  static const double _textOpacity = 0.7;
+
+  // Text styling constants
+  static final double _buttonFontSize = 12.sp;
+  static const FontWeight _buttonFontWeight = FontWeight.w600;
+
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(_buttonBorderRadius),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? Theme.of(context).colorScheme.primaryContainer
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.outline.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-            ),
-          ),
+          padding: _buttonPadding,
+          decoration: _buildButtonDecoration(context),
+          child: _buildButtonText(context),
         ),
+      ),
+    );
+  }
+
+  BoxDecoration _buildButtonDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: isSelected
+          ? Theme.of(context).colorScheme.primaryContainer
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(_buttonBorderRadius),
+      border: Border.all(
+        color: isSelected
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.outline.withOpacity(_borderOpacity),
+        width: _buttonBorderWidth,
+      ),
+    );
+  }
+
+  Widget _buildButtonText(BuildContext context) {
+    return Text(
+      label,
+      style: TextStyle(
+        fontSize: _buttonFontSize,
+        fontWeight: _buttonFontWeight,
+        color: isSelected
+            ? Theme.of(context).colorScheme.onPrimaryContainer
+            : Theme.of(context).colorScheme.onSurface.withOpacity(_textOpacity),
       ),
     );
   }
@@ -170,54 +292,110 @@ class _SimpleBarChart extends StatelessWidget {
 
   const _SimpleBarChart({required this.data});
 
+  // Chart layout constants
+  static final double _maxChartHeight = 160;
+  static final double _barWidth = 32;
+  static final double _barBorderRadius = 4.r;
+  static final double _valueLabelSpacing = 8;
+  static final double _dayLabelSpacing = 8;
+
+  // Text styling constants
+  static final double _valueFontSize = 10;
+  static const FontWeight _valueFontWeight = FontWeight.w500;
+  static final double _dayFontSize = 11;
+  static const FontWeight _dayFontWeight = FontWeight.w500;
+  static const double _valueTextOpacity = 0.7;
+  static const double _dayTextOpacity = 0.6;
+  static const double _gradientEndOpacity = 0.7;
+
+  // Format constants
+  static const String _currencySymbol = '\$';
+
+  // Layout constants
+  static const CrossAxisAlignment _columnCrossAxisAlignment =
+      CrossAxisAlignment.end;
+  static const MainAxisAlignment _columnMainAxisAlignment =
+      MainAxisAlignment.end;
+  static const MainAxisAlignment _rowMainAxisAlignment =
+      MainAxisAlignment.spaceEvenly;
+
   @override
   Widget build(BuildContext context) {
     final maxValue = data.map((e) => e.y).reduce((a, b) => a > b ? a : b);
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: data.map((item) {
-        final height = (item.y / maxValue) * 160.h;
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              '\$${item.y.toInt()}',
-              style: TextStyle(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Container(
-              width: 32.w,
-              height: height,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              item.x,
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
+      crossAxisAlignment: _columnCrossAxisAlignment,
+      mainAxisAlignment: _rowMainAxisAlignment,
+      children: data
+          .map((item) => _buildBarColumn(context, item, maxValue))
+          .toList(),
+    );
+  }
+
+  Widget _buildBarColumn(
+    BuildContext context,
+    ChartData item,
+    double maxValue,
+  ) {
+    final height = (item.y / maxValue) * _maxChartHeight;
+
+    return Column(
+      mainAxisAlignment: _columnMainAxisAlignment,
+      children: [
+        _buildValueLabel(context, item),
+        SizedBox(height: _valueLabelSpacing),
+        _buildBar(context, height),
+        SizedBox(height: _dayLabelSpacing),
+        _buildDayLabel(context, item),
+      ],
+    );
+  }
+
+  Widget _buildValueLabel(BuildContext context, ChartData item) {
+    return Text(
+      '$_currencySymbol${item.y.toInt()}',
+      style: TextStyle(
+        fontSize: _valueFontSize,
+        fontWeight: _valueFontWeight,
+        color: Theme.of(
+          context,
+        ).colorScheme.onSurface.withOpacity(_valueTextOpacity),
+      ),
+    );
+  }
+
+  Widget _buildBar(BuildContext context, double height) {
+    return Container(
+      width: _barWidth,
+      height: height,
+      decoration: BoxDecoration(
+        gradient: _buildBarGradient(context),
+        borderRadius: BorderRadius.circular(_barBorderRadius),
+      ),
+    );
+  }
+
+  LinearGradient _buildBarGradient(BuildContext context) {
+    return LinearGradient(
+      begin: Alignment.bottomCenter,
+      end: Alignment.topCenter,
+      colors: [
+        Theme.of(context).colorScheme.primary,
+        Theme.of(context).colorScheme.primary.withOpacity(_gradientEndOpacity),
+      ],
+    );
+  }
+
+  Widget _buildDayLabel(BuildContext context, ChartData item) {
+    return Text(
+      item.x,
+      style: TextStyle(
+        fontSize: _dayFontSize,
+        fontWeight: _dayFontWeight,
+        color: Theme.of(
+          context,
+        ).colorScheme.onSurface.withOpacity(_dayTextOpacity),
+      ),
     );
   }
 }

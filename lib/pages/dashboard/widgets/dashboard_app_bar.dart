@@ -6,6 +6,41 @@ import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart
 class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   const DashboardAppBar({super.key});
 
+  // AppBar styling constants
+  static const double _appBarElevation = 0.0;
+  static const Color _surfaceTintColor = Colors.transparent;
+
+  // Welcome text styling constants
+  static const double _welcomeTextFontSize = 16.0;
+  static const FontWeight _welcomeTextFontWeight = FontWeight.w700;
+  static const double _welcomeTextOpacity = 0.7;
+
+  // Notification icon constants
+  static const double _notificationIconSize = 24.0;
+  static const double _notificationMarginRight = 8.0;
+  static const double _notificationBadgeSize = 8.0;
+  static const double _notificationBadgePositionRight = 8.0;
+  static const double _notificationBadgePositionTop = 8.0;
+
+  // Profile avatar constants
+  static const double _profileAvatarRadius = 18.0;
+  static const double _profileMarginRight = 16.0;
+  static const double _profileTextFontSize = 14.0;
+  static const FontWeight _profileTextFontWeight = FontWeight.w600;
+
+  // Layout constants
+  static const CrossAxisAlignment _titleCrossAxisAlignment =
+      CrossAxisAlignment.start;
+
+  // Content constants
+  static const String _welcomePrefix = 'Welcome back, ';
+  static const String _defaultSeparator = ' ';
+  static const String _initialsJoinSeparator = '';
+
+  // Widget identifiers
+  static const String _notificationIconKey = 'notification_icon';
+  static const String _profileAvatarKey = 'profile_avatar';
+
   @override
   Widget build(BuildContext context) {
     final dashboardController = Get.find<DashboardController>();
@@ -14,33 +49,48 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return AppBar(
-          elevation: 0,
+          elevation: _appBarElevation,
           backgroundColor: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Colors.transparent,
+          surfaceTintColor: _surfaceTintColor,
           leading: navController.getLeadingIcon(context),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_buildWelcomeMessage(dashboardController, context)],
-          ),
+          title: _buildTitle(dashboardController, context),
           actions: _buildActions(context, dashboardController),
         );
       },
     );
   }
 
-  Obx _buildWelcomeMessage(
+  Widget _buildTitle(DashboardController controller, BuildContext context) {
+    return Column(
+      crossAxisAlignment: _titleCrossAxisAlignment,
+      children: [_buildWelcomeMessage(controller, context)],
+    );
+  }
+
+  Widget _buildWelcomeMessage(
     DashboardController controller,
     BuildContext context,
   ) {
     return Obx(
       () => Text(
-        'Welcome back, ${controller.userName.value.split(' ').first}',
-        style: TextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-        ),
+        _buildWelcomeText(controller.userName.value),
+        style: _buildWelcomeTextStyle(context),
       ),
+    );
+  }
+
+  String _buildWelcomeText(String fullName) {
+    final firstName = fullName.split(_defaultSeparator).first;
+    return '$_welcomePrefix$firstName';
+  }
+
+  TextStyle _buildWelcomeTextStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: _welcomeTextFontSize,
+      fontWeight: _welcomeTextFontWeight,
+      color: Theme.of(
+        context,
+      ).colorScheme.onSurface.withOpacity(_welcomeTextOpacity),
     );
   }
 
@@ -49,63 +99,103 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     DashboardController controller,
   ) {
     return [
-      // Notifications
-      Container(
-        margin: EdgeInsets.only(right: 8.w),
-        child: Stack(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.notifications_outlined,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 24.w,
-              ),
-              onPressed: () {
-                // Handle notifications
-              },
-            ),
-            Positioned(
-              right: 8.w,
-              top: 8.h,
-              child: Container(
-                width: 8.w,
-                height: 8.h,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.error,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      // Profile Avatar
-      Container(
-        margin: EdgeInsets.only(right: 16.w),
-        child: GestureDetector(
-          onTap: () {
-            // Handle profile tap
-          },
-          child: CircleAvatar(
-            radius: 18.r,
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            child: Obx(
-              () => Text(
-                controller.userName.value.split(' ').map((e) => e[0]).join(),
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+      _buildNotificationButton(context),
+      _buildProfileAvatar(context, controller),
     ];
   }
 
+  Widget _buildNotificationButton(BuildContext context) {
+    return Container(
+      key: const ValueKey(_notificationIconKey),
+      margin: const EdgeInsets.only(right: _notificationMarginRight),
+      child: Stack(
+        children: [
+          _buildNotificationIcon(context),
+          _buildNotificationBadge(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationIcon(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.notifications_outlined,
+        color: Theme.of(context).colorScheme.onSurface,
+        size: _notificationIconSize,
+      ),
+      onPressed: _handleNotificationPressed,
+    );
+  }
+
+  Widget _buildNotificationBadge(BuildContext context) {
+    return Positioned(
+      right: _notificationBadgePositionRight,
+      top: _notificationBadgePositionTop,
+      child: Container(
+        width: _notificationBadgeSize,
+        height: _notificationBadgeSize,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.error,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileAvatar(
+    BuildContext context,
+    DashboardController controller,
+  ) {
+    return Container(
+      key: const ValueKey(_profileAvatarKey),
+      margin: const EdgeInsets.only(right: _profileMarginRight),
+      child: GestureDetector(
+        onTap: _handleProfileTap,
+        child: CircleAvatar(
+          radius: _profileAvatarRadius,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: _buildProfileInitials(context, controller),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileInitials(
+    BuildContext context,
+    DashboardController controller,
+  ) {
+    return Obx(
+      () => Text(
+        _generateInitials(controller.userName.value),
+        style: _buildProfileTextStyle(context),
+      ),
+    );
+  }
+
+  String _generateInitials(String fullName) {
+    return fullName
+        .split(_defaultSeparator)
+        .map((word) => word.isNotEmpty ? word[0] : '')
+        .join(_initialsJoinSeparator);
+  }
+
+  TextStyle _buildProfileTextStyle(BuildContext context) {
+    return TextStyle(
+      fontSize: _profileTextFontSize,
+      fontWeight: _profileTextFontWeight,
+      color: Theme.of(context).colorScheme.onPrimaryContainer,
+    );
+  }
+
+  void _handleNotificationPressed() {
+    // Handle notifications navigation
+  }
+
+  void _handleProfileTap() {
+    // Handle profile navigation
+  }
+
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
