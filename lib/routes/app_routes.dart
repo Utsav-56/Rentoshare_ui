@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart' show Widget;
 import 'package:get/get.dart';
 import 'package:rentoshare/MyApp.dart';
+import 'package:rentoshare/dashboard/new_dashboard.dart';
 import 'package:rentoshare/pages/404_page.dart';
 import 'package:rentoshare/pages/auth/signup_page.dart';
 import 'package:rentoshare/pages/dashboard/dashboard_page.dart';
@@ -14,6 +15,7 @@ class AppRoutes {
   static const String FALLBACK = '/fallback';
   static const String SIGNUP = '/signup';
   static const String DASHBOARD = '/dashboard';
+  static const String NEWDASHBOARD = '/newdashboard';
   // Add more as needed
 }
 
@@ -25,6 +27,7 @@ class AppPages {
     AppRoutes.FALLBACK: const NotFoundPage(),
     AppRoutes.SIGNUP: const SignupPage(),
     AppRoutes.DASHBOARD: const DashboardPage(),
+    AppRoutes.NEWDASHBOARD: const NewDashboard(),
     // Add more as needed
   };
 
@@ -65,6 +68,16 @@ class AppPages {
         showDrawer: false,
         showBottomNav: false,
         child: get(AppRoutes.DASHBOARD),
+      ),
+    ),
+
+    GetPage(
+      name: AppRoutes.NEWDASHBOARD,
+      page: () => RentoShareApp(
+        title: "Dashboard",
+        showDrawer: false,
+        showBottomNav: false,
+        child: get(AppRoutes.NEWDASHBOARD),
       ),
     ),
 

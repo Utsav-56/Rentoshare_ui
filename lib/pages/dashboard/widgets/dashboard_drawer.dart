@@ -2,216 +2,244 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rentoshare/pages/dashboard/controllers/dashboard_controller.dart';
+import 'package:rentoshare/routes/app_routes.dart';
+
+import '../../../routes/app_router.dart' show AppRouter;
+
+class DashboardDrawerItem {
+  final String label;
+  final IconData icon;
+  final String? route;
+  final VoidCallback? onTap;
+
+  const DashboardDrawerItem({
+    required this.label,
+    required this.icon,
+    this.route,
+    this.onTap,
+  });
+
+  static const headItems = [
+    DashboardDrawerItem(label: "Utsav", icon: Icons.account_circle),
+  ];
+
+  static const topItems = [
+    DashboardDrawerItem(label: "Home", icon: Icons.home, route: AppRoutes.HOME),
+    DashboardDrawerItem(
+      label: "Profile",
+      icon: Icons.person,
+      route: AppRoutes.LOGIN,
+    ),
+    DashboardDrawerItem(
+      label: "Settings",
+      icon: Icons.settings,
+      route: AppRoutes.SETTINGS,
+    ),
+  ];
+
+  static const bottomItems = [
+    DashboardDrawerItem(
+      label: "Logout",
+      icon: Icons.logout,
+      route: AppRoutes.LOGIN,
+    ),
+  ];
+}
 
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<DashboardController>();
+  void _handleItemTap(DashboardDrawerItem item) {
+    if (item.onTap != null) {
+      item.onTap!();
+    } else if (item.route != null && item.route != Get.currentRoute) {
+      AppRouter.to(item.route!);
+    }
+  }
 
-    return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-      child: Column(
-        children: [
-          // Header
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(24.w, 60.h, 24.w, 24.h),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Theme.of(context).colorScheme.primaryContainer,
-                  Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer.withOpacity(0.8),
-                ],
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildItem(DashboardDrawerItem item, {bool isHeader = false}) {
+    return ListTile(
+      leading: Icon(item.icon),
+      title: Text(
+        item.label,
+        style: isHeader
+            ? const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
+            : const TextStyle(fontSize: 16),
+      ),
+      onTap: isHeader ? null : () => _handleItemTap(item),
+    );
+  }
+
+  Widget get drawerContent => SafeArea(
+    child: Column(
+      children: [
+        // Header
+        Column(
+          children: [
+            // The drawer close button aligned to the right
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CircleAvatar(
-                  radius: 30.r,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.onPrimaryContainer.withOpacity(0.2),
-                  child: Obx(
-                    () => Text(
-                      controller.userName.value
-                          .split(' ')
-                          .map((e) => e[0])
-                          .join(),
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Obx(
-                  () => Text(
-                    controller.userName.value,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  'Active Seller',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onPrimaryContainer.withOpacity(0.8),
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Get.back(),
                 ),
               ],
             ),
-          ),
 
-          // Menu Items
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              itemCount: controller.menuItems.length,
-              itemBuilder: (context, index) {
-                final item = controller.menuItems[index];
-                return Obx(
-                  () => _DrawerMenuItem(
-                    item: item,
-                    isSelected: controller.selectedMenuIndex.value == index,
-                    onTap: () {
-                      controller.selectMenuItem(index);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                );
-              },
+            // Header Items
+            ...DashboardDrawerItem.headItems.map(
+              (item) => _buildItem(item, isHeader: true),
             ),
+          ],
+        ),
+        const Divider(),
+
+        // Top Items
+        Expanded(
+          child: ListView(
+            children: DashboardDrawerItem.topItems.map(_buildItem).toList(),
           ),
+        ),
 
-          // Logout
-          Container(
-            padding: EdgeInsets.all(16.w),
-            child: ListTile(
-              leading: Icon(
-                Icons.logout_rounded,
-                color: Theme.of(context).colorScheme.error,
-                size: 24.w,
-              ),
-              title: Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
-              onTap: () {
-                // Handle logout
-                Get.dialog(
-                  AlertDialog(
-                    title: const Text('Logout'),
-                    content: const Text('Are you sure you want to logout?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Get.back(),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Get.back();
-                          // Perform logout
-                        },
-                        child: const Text('Logout'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+        const Divider(),
 
-class _DrawerMenuItem extends StatelessWidget {
-  final DashboardMenuItem item;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _DrawerMenuItem({
-    required this.item,
-    required this.isSelected,
-    required this.onTap,
-  });
+        // Bottom Items
+        Column(
+          children: DashboardDrawerItem.bottomItems.map(_buildItem).toList(),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        color: isSelected
-            ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.1)
-            : Colors.transparent,
-      ),
-      child: ListTile(
-        leading: Icon(
-          _getIconData(item.icon),
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-          size: 24.w,
-        ),
-        title: Text(
-          item.title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            color: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface,
+    return Drawer(elevation: 4, child: drawerContent);
+  }
+
+  Widget get asSideBar => drawerContent;
+}
+
+class DashboardSidebar extends StatefulWidget {
+  const DashboardSidebar({super.key});
+
+  @override
+  State<DashboardSidebar> createState() => _DashboardSidebarState();
+}
+
+class _DashboardSidebarState extends State<DashboardSidebar> {
+  late DashboardNavController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<DashboardNavController>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Obx(
+        () => Container(
+          width: controller.isIconOnlyMode.value ? 72.0 : 150.0,
+          height: double.infinity,
+          color: Theme.of(context).colorScheme.surfaceBright,
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    IconButton(
+                      onPressed: controller.toggleIconsOnlyMode,
+                      icon: Icon(
+                        controller.isIconOnlyMode.value
+                            ? Icons.menu
+                            : Icons.menu_open,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+
+                    // Header Items
+                    ...DashboardDrawerItem.headItems.map(
+                      (item) => _buildItem(item, isHeader: true),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+
+              // Top Items
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: DashboardDrawerItem.topItems
+                      .map(_buildItem)
+                      .toList(),
+                ),
+              ),
+
+              const Divider(),
+
+              // Bottom Items
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Column(
+                  children: DashboardDrawerItem.bottomItems
+                      .map(_buildItem)
+                      .toList(),
+                ),
+              ),
+            ],
           ),
-        ),
-        onTap: onTap,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
         ),
       ),
     );
   }
 
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'home':
-        return Icons.home_rounded;
-      case 'list':
-        return Icons.list_alt_rounded;
-      case 'shopping_bag':
-        return Icons.shopping_bag_rounded;
-      case 'message':
-        return Icons.message_rounded;
-      case 'star':
-        return Icons.star_rounded;
-      case 'account_balance_wallet':
-        return Icons.account_balance_wallet_rounded;
-      case 'settings':
-        return Icons.settings_rounded;
-      default:
-        return Icons.help_rounded;
+  void _handleItemTap(DashboardDrawerItem item) {
+    if (item.onTap != null) {
+      item.onTap!();
+    } else if (item.route != null && item.route != Get.currentRoute) {
+      AppRouter.to(item.route!);
     }
+  }
+
+  Widget _buildItem(DashboardDrawerItem item, {bool isHeader = false}) {
+    return Obx(() {
+      if (controller.isIconOnlyMode.value) {
+        return Tooltip(
+          message: item.label,
+          child: Container(
+            width: 56,
+            height: 56,
+            margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+            child: InkWell(
+              onTap: isHeader ? null : () => _handleItemTap(item),
+              borderRadius: BorderRadius.circular(8.0),
+              child: Icon(
+                item.icon,
+                size: isHeader ? 28 : 24,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ),
+        );
+      }
+
+      return ListTile(
+        leading: Icon(item.icon),
+        title: Text(
+          item.label,
+          style: isHeader
+              ? const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+              : const TextStyle(fontSize: 14),
+        ),
+        onTap: isHeader ? null : () => _handleItemTap(item),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        dense: true,
+      );
+    });
   }
 }

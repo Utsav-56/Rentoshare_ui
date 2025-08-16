@@ -10,16 +10,40 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(DashboardController());
+    final dashboardController = Get.put(DashboardController());
+    final navController = Get.put(DashboardNavController());
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: const DashboardAppBar(),
-      drawer: const DashboardDrawer(),
-      body: Obx(
-        () =>
-            DashboardContent(selectedIndex: controller.selectedMenuIndex.value),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Determine if we should use sidebar mode based on screen width
+        final bool shouldUseSidebar = constraints.maxWidth > 600;
+
+        // Update the navigation controller based on screen size
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          navController.isSidebarMode.value = shouldUseSidebar;
+        });
+
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          appBar: const DashboardAppBar(),
+          drawer: shouldUseSidebar ? null : const DashboardDrawer(),
+          body: (shouldUseSidebar)
+              ? Row(
+                  children: [
+                    DashboardSidebar(),
+                    Expanded(
+                      child: DashboardContent(
+                        selectedIndex:
+                            dashboardController.selectedMenuIndex.value,
+                      ),
+                    ),
+                  ],
+                )
+              : DashboardContent(
+                  selectedIndex: dashboardController.selectedMenuIndex.value,
+                ),
+        );
+      },
     );
   }
 }

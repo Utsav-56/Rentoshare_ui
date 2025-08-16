@@ -1,4 +1,46 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+class DashboardNavController extends GetxController {
+  var isSidebarMode = false.obs;
+  var isIconOnlyMode = false.obs;
+
+  void toggleIconsOnlyMode() {
+    isIconOnlyMode.value = !isIconOnlyMode.value;
+  }
+
+  void toggleSidebarMode() {
+    isSidebarMode.value = !isSidebarMode.value;
+  }
+
+  Widget getLeadingIcon(BuildContext context) {
+    return Obx(() {
+      if (isSidebarMode.value) {
+        // Desktop mode - show toggle icon for sidebar
+        return IconButton(
+          icon: Icon(
+            isIconOnlyMode.value ? Icons.chevron_right : Icons.chevron_left,
+            color: Theme.of(context).colorScheme.onSurface,
+            size: 24.w,
+          ),
+          onPressed: toggleIconsOnlyMode,
+          tooltip: isIconOnlyMode.value ? 'Expand sidebar' : 'Collapse sidebar',
+        );
+      } else {
+        // Mobile mode - show menu icon for drawer
+        return IconButton(
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+          icon: const Icon(Icons.menu),
+        );
+      }
+    });
+  }
+}
+
+// ...existing code...
 
 class DashboardController extends GetxController {
   // Observable variables
