@@ -31,6 +31,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   // Layout constants
   static const CrossAxisAlignment _titleCrossAxisAlignment =
       CrossAxisAlignment.start;
+  static const double _tabletBreakpoint = 600.0;
 
   // Content constants
   static const String _welcomePrefix = 'Welcome back, ';
@@ -48,11 +49,20 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        final isTablet = constraints.maxWidth > _tabletBreakpoint;
+
         return AppBar(
           elevation: _appBarElevation,
           backgroundColor: Theme.of(context).colorScheme.surface,
           surfaceTintColor: _surfaceTintColor,
-          leading: navController.getLeadingIcon(context),
+          leading: isTablet
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon: const Icon(Icons.menu),
+                ),
           title: _buildTitle(dashboardController, context),
           actions: _buildActions(context, dashboardController),
         );

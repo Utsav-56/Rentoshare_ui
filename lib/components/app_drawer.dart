@@ -12,7 +12,7 @@ class AppDrawer extends StatelessWidget {
   static const double _drawerElevation = 4.0;
   static const double _headerPadding = 8.0;
   static const double _dividerHeight = 1.0;
-  static const double _bottomPadding = 8.0;
+  static const double _bottomPadding = 0.0;
 
   // Close button constants
   static const double _closeButtonSize = 24.0;
@@ -134,8 +134,8 @@ class _AppDrawerItem extends StatelessWidget {
   static const double _iconSize = 24.0;
   static const double _headerIconSize = 28.0;
   static const EdgeInsets _itemPadding = EdgeInsets.symmetric(
-    horizontal: 16.0,
-    vertical: 12.0,
+    horizontal: 8.0,
+    vertical: 3.0,
   );
   static const double _borderRadius = 8.0;
   static const double _activeOpacity = 0.12;
@@ -148,7 +148,7 @@ class _AppDrawerItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
       decoration: BoxDecoration(
         color: isActive
-            ? Theme.of(context).colorScheme.primary.withOpacity(_activeOpacity)
+            ? const Color.fromARGB(255, 0, 0, 0)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
@@ -315,10 +315,10 @@ class _SidebarItem extends StatelessWidget {
     vertical: 4.0,
     horizontal: 8.0,
   );
-  static const EdgeInsets _itemPadding = EdgeInsets.symmetric(horizontal: 16.0);
+  static const EdgeInsets _itemPadding = EdgeInsets.symmetric(horizontal: 8.0);
   static const double _borderRadius = 8.0;
   static const double _activeOpacity = 0.12;
-  static const double _tooltipDelay = 500.0;
+  static const double _tooltipDelay = 1000.0;
 
   @override
   Widget build(BuildContext context) {

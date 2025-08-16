@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rentoshare/controllers/app_navigation_controller.dart';
-import 'package:rentoshare/dashboard/controllers/dashboard_controller.dart';
+
+import 'package:rentoshare/routes/app_router.dart';
 import 'package:rentoshare/styles/app_theme.dart';
 import 'package:toastification/toastification.dart';
-
-import 'routes/app_routes.dart';
-// import '../.bak/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +37,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(NavigationController());
+    // Initialize controllers
+    var navController = Get.put(NavigationController());
+
+    AppRouter.SetOnRouteChanged(() {
+      navController.updateCurrentRoute(AppRouter.currentRoute);
+    });
 
     return ScreenUtilInit(
       designSize: Size(1920, 1200), // Default size
@@ -52,9 +55,16 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.theme,
           darkTheme: AppTheme.theme,
           themeMode: ThemeMode.system,
-          initialRoute: AppRoutes.DASHBOARD,
+          initialRoute: AppRoutes.HOME,
           getPages: AppPages.getPages,
+          // Add this to track route changes
+          routingCallback: (routing) {
+            if (routing?.current != null) {
+              navController.updateCurrentRoute(routing!.current);
+            }
+          },
           builder: (context, child) {
+            // Initialize ScreenUtil
             ScreenUtil.init(context);
             return MediaQuery(
               data: MediaQuery.of(

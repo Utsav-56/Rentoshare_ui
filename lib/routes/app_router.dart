@@ -7,6 +7,12 @@ import 'package:rentoshare/routes/app_routes.dart';
 export './app_routes.dart';
 
 class AppRouter {
+  static VoidCallback onRouteChanged = () {};
+
+  static void SetOnRouteChanged(VoidCallback callback) {
+    onRouteChanged = callback;
+  }
+
   static Future<T?> to<T>(String routeName, {dynamic arguments}) async {
     // Check if the route is already the current route
     if (isActiveRoute(routeName)) {
@@ -20,9 +26,11 @@ class AppRouter {
         'Route $routeName does not exist in AppPages.routes',
         type: ToastType.error,
       );
+
       return Get.toNamed<T>(AppRoutes.FALLBACK);
     }
 
+    onRouteChanged.call();
     return Get.toNamed<T>(routeName, arguments: arguments);
   }
 

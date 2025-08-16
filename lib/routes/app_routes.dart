@@ -10,22 +10,27 @@ import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 
 class AppRoutes {
-  static const String HOME = '/home';
-  static const String LOGIN = '/login';
-  static const String SETTINGS = '/settings';
-  static const String FALLBACK = '/fallback';
-  static const String SIGNUP = '/signup';
+  static const String HOME = '/';
   static const String DASHBOARD = '/dashboard';
+  static const String DASHBOARD_OVERVIEW = '/dashboard/overview';
+  static const String DASHBOARD_LISTINGS = '/dashboard/listings';
+  static const String DASHBOARD_RENTALS = '/dashboard/rentals';
+  static const String DASHBOARD_MESSAGES = '/dashboard/messages';
+  static const String DASHBOARD_REVIEWS = '/dashboard/reviews';
+  static const String DASHBOARD_WALLET = '/dashboard/wallet';
+  static const String DASHBOARD_SETTINGS = '/dashboard/settings';
 
-  // Dashboard routes
-  static const String MARKETPLACE = '/marketplace/browse';
-  static const String MY_LISTINGS = '/listings/manage';
-  static const String MY_RENTALS = '/rentals/active';
-  static const String MESSAGES = '/chat';
-  static const String PROFILE = '/profile/edit';
-
+  static const String MARKETPLACE = '/marketplace';
+  static const String MY_LISTINGS = '/my-listings';
+  static const String MY_RENTALS = '/my-rentals';
+  static const String MESSAGES = '/messages';
+  static const String PROFILE = '/profile';
+  static const String SETTINGS = '/settings';
   static const String HELP = '/help';
-  // Add more as needed
+  static const String LOGIN = '/login';
+
+  static const String SIGNUP = '/signup';
+  static const String FALLBACK = '/fallback';
 }
 
 class AppPages {
@@ -39,11 +44,6 @@ class AppPages {
 
     // Dashboard routes
     AppRoutes.MY_RENTALS: MyRentalsView(),
-    AppRoutes.MARKETPLACE: const NotFoundPage(),
-    AppRoutes.MY_LISTINGS: const NotFoundPage(),
-    AppRoutes.MESSAGES: const NotFoundPage(),
-    AppRoutes.PROFILE: const NotFoundPage(),
-    AppRoutes.HELP: const NotFoundPage(),
   };
 
   static Widget get(String routeName) =>

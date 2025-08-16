@@ -127,73 +127,140 @@ class DashboardSidebar extends StatefulWidget {
   State<DashboardSidebar> createState() => _DashboardSidebarState();
 }
 
-class _DashboardSidebarState extends State<DashboardSidebar> {
+class _DashboardSidebarState extends State<DashboardSidebar>
+    with SingleTickerProviderStateMixin {
   late DashboardNavController controller;
+  late AnimationController _animationController;
+  late Animation<double> _widthAnimation;
+
+  // Constants for sidebar dimensions
+  static const double _iconOnlyWidth = 72.0;
+  static const double _expandedWidth =
+      200.0; // Increased from 150.0 for better spacing
+  static const Duration _animationDuration = Duration(milliseconds: 250);
 
   @override
   void initState() {
     super.initState();
     controller = Get.find<DashboardNavController>();
+
+    // Initialize animation controller
+    _animationController = AnimationController(
+      duration: _animationDuration,
+      vsync: this,
+    );
+
+    // Create width animation
+    _widthAnimation =
+        Tween<double>(
+          begin: controller.isIconOnlyMode.value
+              ? _iconOnlyWidth
+              : _expandedWidth,
+          end: controller.isIconOnlyMode.value
+              ? _iconOnlyWidth
+              : _expandedWidth,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
+    // Listen to controller changes
+    ever(controller.isIconOnlyMode, (bool isIconOnly) {
+      _updateWidth(isIconOnly);
+    });
+  }
+
+  void _updateWidth(bool isIconOnly) {
+    _widthAnimation =
+        Tween<double>(
+          begin: _widthAnimation.value,
+          end: isIconOnly ? _iconOnlyWidth : _expandedWidth,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
+    _animationController.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Obx(
-        () => Container(
-          width: controller.isIconOnlyMode.value ? 72.0 : 150.0,
-          height: double.infinity,
-          color: Theme.of(context).colorScheme.surfaceBright,
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    IconButton(
-                      onPressed: controller.toggleIconsOnlyMode,
-                      icon: Icon(
-                        controller.isIconOnlyMode.value
-                            ? Icons.menu
-                            : Icons.menu_open,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
+      child: AnimatedBuilder(
+        animation: _widthAnimation,
+        builder: (context, child) {
+          return Container(
+            width: _widthAnimation.value,
+            height: double.infinity,
+            color: Theme.of(context).colorScheme.surfaceBright,
+            child: Column(
+              children: [
+                _buildHeader(context),
+                const Divider(height: 1),
+                _buildTopItems(),
+                const Divider(height: 1),
+                _buildBottomItems(),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-                    // Header Items
-                    ...DashboardDrawerItem.headItems.map(
-                      (item) => _buildItem(item, isHeader: true),
-                    ),
-                  ],
-                ),
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          IconButton(
+            onPressed: controller.toggleIconsOnlyMode,
+            icon: Obx(
+              () => Icon(
+                controller.isIconOnlyMode.value ? Icons.menu : Icons.menu_open,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
-              const Divider(),
-
-              // Top Items
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: DashboardDrawerItem.topItems
-                      .map(_buildItem)
-                      .toList(),
-                ),
-              ),
-
-              const Divider(),
-
-              // Bottom Items
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  children: DashboardDrawerItem.bottomItems
-                      .map(_buildItem)
-                      .toList(),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          // Header Items
+          ...DashboardDrawerItem.headItems.map(
+            (item) => _buildItem(item, isHeader: true),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopItems() {
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: DashboardDrawerItem.topItems.length,
+        itemBuilder: (context, index) {
+          final item = DashboardDrawerItem.topItems[index];
+          return _buildItem(item);
+        },
+      ),
+    );
+  }
+
+  Widget _buildBottomItems() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Column(
+        children: DashboardDrawerItem.bottomItems
+            .map((item) => _buildItem(item))
+            .toList(),
       ),
     );
   }
@@ -208,38 +275,61 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
   Widget _buildItem(DashboardDrawerItem item, {bool isHeader = false}) {
     return Obx(() {
-      if (controller.isIconOnlyMode.value) {
-        return Tooltip(
-          message: item.label,
-          child: Container(
-            width: 56,
-            height: 56,
-            margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-            child: InkWell(
-              onTap: isHeader ? null : () => _handleItemTap(item),
-              borderRadius: BorderRadius.circular(8.0),
-              child: Icon(
-                item.icon,
-                size: isHeader ? 28 : 24,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ),
-        );
-      }
+      final isIconOnly = controller.isIconOnlyMode.value;
 
-      return ListTile(
-        leading: Icon(item.icon),
+      if (isIconOnly) {
+        return _buildIconOnlyItem(item, isHeader);
+      } else {
+        return _buildFullItem(item, isHeader);
+      }
+    });
+  }
+
+  Widget _buildIconOnlyItem(DashboardDrawerItem item, bool isHeader) {
+    return Tooltip(
+      message: item.label,
+      waitDuration: const Duration(milliseconds: 500),
+      child: Container(
+        width: 56,
+        height: 56,
+        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+        child: InkWell(
+          onTap: isHeader ? null : () => _handleItemTap(item),
+          borderRadius: BorderRadius.circular(8.0),
+          child: Icon(
+            item.icon,
+            size: isHeader ? 28 : 24,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFullItem(DashboardDrawerItem item, bool isHeader) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+      child: ListTile(
+        leading: Icon(
+          item.icon,
+          size: isHeader ? 28 : 24,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
         title: Text(
           item.label,
-          style: isHeader
-              ? const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
-              : const TextStyle(fontSize: 14),
+          style: TextStyle(
+            fontSize: isHeader ? 18 : 14,
+            fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+          overflow: TextOverflow.ellipsis,
         ),
         onTap: isHeader ? null : () => _handleItemTap(item),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
         dense: true,
-      );
-    });
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
+    );
   }
 }
