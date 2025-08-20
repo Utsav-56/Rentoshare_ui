@@ -45,7 +45,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final dashboardController = Get.find<DashboardController>();
-    final navController = Get.find<NavigationController>();
+    final navController = Get.find<AppNavigationController>();
 
     return LayoutBuilder(
       builder: (context, constraints) {

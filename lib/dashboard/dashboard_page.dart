@@ -15,7 +15,7 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dashboardController = Get.put(DashboardController());
-    final navController = Get.find<NavigationController>();
+    final navController = Get.find<AppNavigationController>();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -61,7 +61,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDashboardSidebar(NavigationController navController) {
+  Widget _buildDashboardSidebar(AppNavigationController navController) {
     final dashboardController = Get.find<DashboardController>();
 
     return Obx(() {
@@ -74,7 +74,7 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildIconOnlySidebar(
     DashboardController dashboardController,
-    NavigationController navController,
+    AppNavigationController navController,
   ) {
     return SafeArea(
       child: Column(
@@ -135,7 +135,7 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildFullSidebar(
     DashboardController dashboardController,
-    NavigationController navController,
+    AppNavigationController navController,
   ) {
     return SafeArea(
       child: Column(

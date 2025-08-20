@@ -38,11 +38,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize controllers
-    var navController = Get.put(NavigationController());
-
-    AppRouter.SetOnRouteChanged(() {
-      navController.updateCurrentRoute(AppRouter.currentRoute);
-    });
+    var navController = Get.put(AppNavigationController());
 
     return ScreenUtilInit(
       designSize: Size(1920, 1200), // Default size
@@ -57,12 +53,8 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           initialRoute: AppRoutes.HOME,
           getPages: AppPages.getPages,
+
           // Add this to track route changes
-          routingCallback: (routing) {
-            if (routing?.current != null) {
-              navController.updateCurrentRoute(routing!.current);
-            }
-          },
           builder: (context, child) {
             // Initialize ScreenUtil
             ScreenUtil.init(context);

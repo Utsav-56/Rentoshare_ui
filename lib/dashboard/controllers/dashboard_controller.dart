@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:rentoshare/controllers/app_navigation_controller.dart';
 
 // Use the unified NavigationController instead of DashboardNavController
-typedef DashboardNavController = NavigationController;
+typedef DashboardNavController = AppNavigationController;
 
 class DashboardController extends GetxController {
   // Observable variables

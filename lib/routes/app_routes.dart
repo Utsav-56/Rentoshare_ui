@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart' show Widget;
 import 'package:get/get.dart';
-import 'package:rentoshare/MyApp.dart';
+import 'package:rentoshare/scaffolds/app_scaffold.dart';
 import 'package:rentoshare/dashboard/widgets/rentals/my_rentals_view.dart';
 
 import 'package:rentoshare/pages/404_page.dart';
@@ -30,6 +30,8 @@ class AppRoutes {
   static const String LOGIN = '/login';
 
   static const String SIGNUP = '/signup';
+  static const String LOGOUT = '/logout';
+
   static const String FALLBACK = '/fallback';
 }
 
