@@ -21,7 +21,6 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navController = Get.find<AppNavigationController>();
-    final isWide = MediaQuery.of(context).size.width > 600;
 
     final drawerContent = SafeArea(
       child: Column(
@@ -35,9 +34,11 @@ class AppDrawer extends StatelessWidget {
       ),
     );
 
-    return isWide
-        ? Drawer(elevation: 0, child: drawerContent)
-        : Drawer(elevation: _drawerElevation, child: drawerContent);
+    return Drawer(
+      elevation: _drawerElevation,
+      backgroundColor: Colors.grey.shade900,
+      child: drawerContent,
+    );
   }
 
   Widget _buildHeader(BuildContext context) {

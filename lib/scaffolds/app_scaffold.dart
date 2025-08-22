@@ -26,34 +26,21 @@ class RentoShareApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > _tabletBreakpoint;
-
     final shouldShowDrawer = (showDrawer ?? true) && !isWide;
     final pageTitle = title ?? 'RentoShare';
 
-    return Scaffold(
+    final normalLayout = Scaffold(
       appBar: AppBar(title: Text(pageTitle)),
-      drawer: shouldShowDrawer ? const AppDrawer() : null,
-      body: !shouldShowDrawer ? _buildWithSidebar() : _buildWithoutSidebar(),
+      drawer: const AppDrawer(),
+      body: ClipRect(child: child),
       bottomNavigationBar: (showBottomNav ?? true) ? AppBottomBar() : null,
     );
-  }
 
-  Widget _buildWithSidebar() {
-    return Row(
-      children: [
-        AppSidebar(), // persistent drawer
-        Expanded(
-          child: ClipRect(
-            child: child, // Clip to prevent overflow rendering issues
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWithoutSidebar() {
-    return ClipRect(
-      child: child, // Clip to prevent overflow rendering issues
-    );
+    if (!shouldShowDrawer) {
+      return Scaffold(body: Row(children: [AppSidebar(), normalLayout]));
+    } else {
+      // Mobile layout with drawer
+      return normalLayout;
+    }
   }
 }
